@@ -4,9 +4,199 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page</title>
+    <title>MoldyxVoldy Client-Clicker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        body{
+            margin: 0%;
+            padding: 0%;
+            /*overflow: hidden;*/
+        }
+        button{
+            width: 190px;
+            height: 186px;
+            
+        }
+   </style>
 </head>
 <body>
-  <p>Hello World</p>
+    
+        <button id="up1" class="btn btn-outline-danger btn-lg" type="button" onclick="upgrade1()">Add an extra point<br> every click <br> 75 points</button>
+        <br>
+        <button id="up2" class="btn btn-outline-warning btn-lg" type="button" onclick="upgrade2()">10 points every second <br> 400 points</button>
+        <br>
+        <button id="up3" class="btn btn-outline-warning btn-lg" type="button" onclick="upgrade3()">+5 every click<br> and 20 every second     <br> 1,750 points</button>
+        <br>
+        <button id="up4" class="btn btn-outline-success btn-lg" type="button" onclick="upgrade4()">+60 every click <br>and 1000 every second <br> 100,000 points</button>
+
+        <button id="clicker" onclick="add(), update()" style="width: 200px; height: 200px; position: absolute; top: 37%; left: 40%; border-radius: 10em; font-size: 20px;" type="button"  class="btn btn-outline-success btn-lg">Click me</button>
+
+        <button type="button" class="btn btn-outline-primary" style="width: 400px; height: 100px; position: absolute; left: 32%; bottom: 0%; font-size: 31px" id="numOfPoints">You are 10,000,000 points<br> away from Rebirthing</button>
+
+        <button type="button" class="btn btn-outline-primary btn-lg" style="width: 300px; height: 100px; top: 43%; right: 0%; position: absolute;" onclick="rebirth()">Rebirth!!! 10,000,000 points</button>
+
+        <button type="button" class="btn btn-outline-dark btn-lg" style="border-top-color: rgba(255, 255, 255, 0); border-right-color: rgba(255, 255, 255, 0); top: 0%; right: 0%; position: absolute; height: 100px;">Score:</button>
+
+        <button type="button" class="btn btn-outline-dark btn-lg" style="border-top-color: rgba(255, 255, 255, 0); border-right-color: rgba(255, 255, 255, 0); top: 100px; right: 0%; position: absolute; height: 50px; width: 150px;" id="score">0</button>
+
+        <button type="button" class="btn btn-outline-secondary btn-lg" style="top: 0%; left: 40%; position: absolute; height: 90px;" onclick="reset()">Reset</button>
+
+        <script>
+            let varscore
+            let cps
+            let up1Cost
+            let up2Cost
+            let up3Cost
+            let up4Cost
+            let rebirthCost
+            let loops
+            let rebirths = localStorage.getItem('rebirths')
+            function defualt(){
+                varscore = 0
+                cps = 1
+                up1Cost = 75
+                up2Cost = 400
+                up3Cost = 1750
+                up4Cost = 100000
+                rebirthCost = 10000000
+                loops
+            }
+            
+            defualt()
+
+            let multiplier = 1
+
+            function add(){
+                varscore += cps * multiplier
+                update()
+            }
+
+            function update(){
+                document.getElementById('score').innerHTML = varscore
+                document.getElementById("numOfPoints").innerHTML = `You are ${10000000 - varscore} points<br> away from rebirthing` 
+                document.getElementById('up1').innerHTML = `Add ${multiplier} extra points<br> every click <br> ${up1Cost} points`
+                document.getElementById('up2').innerHTML = `${multiplier * 10} points every second <br> ${up2Cost} points`
+                document.getElementById('up3').innerHTML = `+${multiplier * 5} every click<br> and ${multiplier * 20} every second <br> ${up3Cost} points`
+                document.getElementById('up4').innerHTML = `+${multiplier * 60} every click<br> and ${multiplier * 1000} every second <br> ${up4Cost} points`
+            }
+
+            rebirthCheck()
+
+            function upgrade1(){
+                update()
+                if(varscore >= up1Cost){
+                    cps++
+                    varscore -= up1Cost
+                    up1Cost += 25
+                    update()
+                }else{
+                    alert("You need more points")
+                }
+            }
+
+            function upgrade2(){
+                update()
+                if(varscore >= up2Cost){
+                    varscore -= up2Cost
+                    up2Cost += 75
+                    loops = setInterval(() => {
+                        varscore += 10 * multiplier
+                        update()
+                    }, 1000)
+                }else{
+                    alert("You need more points")
+                }
+            }
+
+            function upgrade3(){
+                update()
+                if(varscore >= up3Cost){
+                    varscore -= up3Cost
+                    up3Cost += 250
+                    cps += 5
+                    loops = setInterval(() => {
+                        varscore += 20 * multiplier
+                        update()
+                    }, 1000);
+                }else{
+                    alert("You need more points")
+                }
+            }
+
+            function upgrade4(){
+                update()
+                if(varscore >= up4Cost){
+                    varscore -= up4Cost
+                    up4Cost += 5000
+                    cps += 60
+                    loops = setInterval(() => {
+                        varscore += 1000 * multiplier
+                        update()
+                    }, 1000);
+                }else{
+                    alert("You need more points")
+                }
+            }
+
+            function rebirth(){
+                if(varscore >= rebirthCost){
+                    rebirths++
+                    localStorage.setItem('rebirths', rebirths)
+                    window.location.reload()
+                    //alert("This feature is under development")
+                    for (let i = 1; i < window.loops; i++) {
+                        window.clearInterval(i);
+                    }
+                    defualt()
+                    cps = rebirths + 1
+                    up1Cost = up1Cost / rebirths + .5
+                    up1Cost = Math.floor(up1Cost)
+                    up2Cost = up2Cost / rebirths + .5
+                    up2Cost = Math.floor(up2Cost)
+                    up3Cost = up3Cost / rebirths + .5
+                    up3Cost = Math.floor(up3Cost)
+                    up4Cost = up4Cost / rebirths + .5
+                    up4Cost = Math.floor(up4Cost)
+                    multiplier++
+                    update()
+                }else{
+                    alert("You need more points")
+                }
+            }
+
+
+            document.onkeydown = (e) => {
+                switch (e.key) {
+                    case " ": 
+                    window.location.href = "../home.html"
+                    break;
+                    case "l": 
+                    varscore += 100000000
+                    update()
+                }
+            }
+
+            function rebirthCheck(){
+                if(rebirths > 0){
+                    defualt()
+                    cps = rebirths + 1
+                    up1Cost = up1Cost / rebirths + .5
+                    up1Cost = Math.floor(up1Cost)
+                    up2Cost = up2Cost / rebirths + .5
+                    up2Cost = Math.floor(up2Cost)
+                    up3Cost = up3Cost / rebirths + .5
+                    up3Cost = Math.floor(up3Cost)
+                    up4Cost = up4Cost / rebirths + .5
+                    up4Cost = Math.floor(up4Cost)
+                    multiplier = rebirths + 1
+                    update() 
+                }
+            }
+
+            function reset(){
+                localStorage.removeItem('rebirths', 0)
+                window.location.reload()
+            }
+        </script>
 </body>
 </html>
